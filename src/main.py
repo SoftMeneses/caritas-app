@@ -18,16 +18,16 @@ def main(page: ft.Page):
     peachy = "#CC3E5E"          
     red_chocolate = "#38050F"
 
-    # Lista de imágenes para el carrusel recuerda cambiar la ruta 
+    # Lista de imágenes para el carrusel (OJO si no aparecen las imagenes en la app, cambiar la ruta)
     images = [
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_1.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_2.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_3.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_4.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_5.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_6.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_7.jpeg",
-        r"C:\Users\Guill\Desktop\caritas-app-main\src\assets\side_8.jpeg",
+        r"src\assets\side_1.jpeg",
+        r"src\assets\side_2.jpeg",
+        r"src\assets\side_3.jpeg",
+        r"src\assets\side_4.jpeg",
+        r"src\assets\side_5.jpeg",
+        r"src\assets\side_6.jpeg",
+        r"src\assets\side_7.jpeg",
+        r"src\assets\side_8.jpeg",
     ]
 
     # Índice de la imagen actual
@@ -38,7 +38,7 @@ def main(page: ft.Page):
         content=ft.Image(src=images[current_index], width=400, height=300, fit=ft.ImageFit.CONTAIN),
         alignment=ft.alignment.center_left,
         padding=ft.padding.only(left=50),
-        bgcolor=ft.colors.TRANSPARENT,
+        bgcolor=ft.Colors.TRANSPARENT,
         animate_opacity=ft.Animation(300, "easeInOut"),  # Animación de opacidad
     )
 
@@ -81,7 +81,7 @@ def main(page: ft.Page):
         hint_text="Usuario",
         border="underline",
         color="black",
-        prefix_icon=ft.icons.PERSON,
+        prefix_icon=ft.Icons.PERSON,
     )
 
     pass_field = ft.TextField(
@@ -90,7 +90,7 @@ def main(page: ft.Page):
         hint_text="Contraseña",
         border="underline",
         color="black",
-        prefix_icon=ft.icons.LOCK,
+        prefix_icon=ft.Icons.LOCK,
         password=True,
         can_reveal_password=True,
     )
@@ -107,28 +107,32 @@ def main(page: ft.Page):
             page.snack_bar.open = True
         page.update()
 
-    # Función para confirmar la salida de la aplicación
-    def confirm_exit(e):
-        def close_dialog(e):
-            page.dialog.open = False
-            page.update()
+    # Función para cerrar la aplicación
+    def salir_programa(e):
+        page.window.close()
 
-        page.dialog = ft.AlertDialog(
-            title=ft.Text("¿Estás seguro?"),
-            content=ft.Text("¿Quieres salir de la aplicación?"),
-            actions=[
-                ft.TextButton("Sí", on_click=lambda _: page.window_close()),
-                ft.TextButton("No", on_click=close_dialog),
-            ],
-        )
-        page.dialog.open = True
+    # Función para cerrar el cuadro de diálogo
+    def cerrar_dialogo(e):
+        dlg_modal.open = False
         page.update()
+
+    # Crear el cuadro de diálogo modal
+    dlg_modal = ft.AlertDialog(
+        modal=True,
+        title=ft.Text("¿Estás Seguro?"),
+        content=ft.Text("¿Deseas Salir de la Aplicación?"),
+        actions=[
+            ft.TextButton("Sí", on_click=salir_programa),
+            ft.TextButton("No", on_click=cerrar_dialogo),
+        ],
+        actions_alignment=ft.MainAxisAlignment.END
+    )
 
     # Botón de inicio de sesión 
     login_button = ft.ElevatedButton(
         content=ft.Row(
             [
-                ft.Icon(ft.icons.LOGIN, color="white"),
+                ft.Icon(ft.Icons.LOGIN, color="white"),
                 ft.Text("INICIAR SESIÓN", color="white", weight="w500"),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
@@ -142,21 +146,21 @@ def main(page: ft.Page):
     logout_button = ft.ElevatedButton(
         content=ft.Row(
             [
-                ft.Icon(ft.icons.LOGOUT, color="white"),
+                ft.Icon(ft.Icons.LOGOUT, color="white"),
                 ft.Text("SALIR DEL PROGRAMA", color="white", weight="w500"),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
         ),
         width=280,
         bgcolor="red",
-        on_click=confirm_exit,
+        on_click = lambda e: page.open(dlg_modal),
     )
 
     # Botón para iniciar sesión como invitado
     guest_login_button = ft.ElevatedButton(
         content=ft.Row(
             [
-                ft.Icon(ft.icons.PERSON, color="black"),
+                ft.Icon(ft.Icons.PERSON, color="black"),
                 ft.Text("INICIAR COMO INVITADO", color="black", weight="w500"),
             ],
             alignment=ft.MainAxisAlignment.CENTER,
