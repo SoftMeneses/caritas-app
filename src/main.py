@@ -1,6 +1,7 @@
 import flet as ft
 import threading
 import time
+from db import verificar_usuario
 
 def main(page: ft.Page):
     # Configuración de la página
@@ -99,13 +100,40 @@ def main(page: ft.Page):
     def login(e):
         usuario = user_field.value
         password = pass_field.value
+
+        print(f"Usuario: {usuario}, Contraseña: {password}")
+
         if usuario and password:
-  
-            pass  
+            user = verificar_usuario(usuario, password)  # función de usuario
+
+            if user:
+                
+                rol = user[-1]  
+                snack_bar = ft.SnackBar(ft.Text(f"Inicio de sesión exitoso como {rol}"))
+                snack_bar.open = True
+                page.add(snack_bar)  
+                page.update() 
+                
+                # logica segunel rol
+                if rol == 'ADMIN':
+                    
+                    pass  
+                elif rol == 'VOLUNTARIO':
+                    
+                    pass
+                elif rol == 'INVITADO':
+                    
+                    pass
+            else:
+                snack_bar = ft.SnackBar(ft.Text("Usuario o contraseña incorrectos"))
+                snack_bar.open = True
+                page.add(snack_bar)
+                page.update()  
         else:
-            page.snack_bar = ft.SnackBar(ft.Text("Por favor, complete los campos"))
-            page.snack_bar.open = True
-        page.update()
+            snack_bar = ft.SnackBar(ft.Text("Por favor, complete los campos"))
+            snack_bar.open = True
+            page.add(snack_bar)
+            page.update()
 
     # Función para cerrar la aplicación
     def salir_programa(e):
