@@ -7,81 +7,65 @@ def main(page: ft.Page):
     page.title = "Cáritas San Cristóbal - Inicio de Sesión"
     page.window_width = 800
     page.window_height = 600
-    page.window_resizable = False  # Evita redimensionar la ventana
-    page.window_icon = r"image\logo-caritas.png" #TODO revisar la integración del icono en la ventana de windows
-    page.bgcolor = ft.Colors.GREY # TODO seleccionar color de fondo mas adecuado
+    page.window_resizable = False  
+    page.window.icon = "image/logo_caritas_2.ico" # TODO revisar integracion del icono
+    page.bgcolor = "#dfdcbd"  
     page.padding = 0
     page.vertical_alignment = "center"
     page.horizontal_alignment = "center"
 
-    # Paleta de colores los 3 de abajo no estan siendo utilizados
+    # Paleta de colores
     cherry = "#660924"          
     wine = "#630D13"            
-    nectarine = "#941737"       
-    peachy = "#CC3E5E"          
-    red_chocolate = "#38050F"
 
-    # Lista de imágenes para el carrusel (OJO si no aparecen las imagenes en la app, cambiar la ruta)
+    # Lista de imágenes para el carrusel
     images = [
-        r"src\assets\side_1.jpeg",
-        r"src\assets\side_2.jpeg",
-        r"src\assets\side_3.jpeg",
-        r"src\assets\side_4.jpeg",
-        r"src\assets\side_5.jpeg",
-        r"src\assets\side_6.jpeg",
-        r"src\assets\side_7.jpeg",
-        r"src\assets\side_8.jpeg",
+        r"src\assets\side_1_rebuild.jpeg",
+        r"src\assets\side_2_rebuild.jpeg",
+        r"src\assets\side_3_rebuild.jpeg",
+        r"src\assets\side_4_rebuild.jpeg",
+        r"src\assets\side_5_rebuild.jpeg",
+        r"src\assets\side_6_rebuild.jpeg",
+        r"src\assets\side_7_rebuild.jpeg",
+        r"src\assets\side_8_rebuild.jpeg",
     ]
 
-    # Índice de la imagen actual
     current_index = 0
 
-    # Crear la imagen que se actualizará
+    # Imagen de fondo dinámica
     image_display = ft.Image(
-        src=images[current_index], width=600, height=500, fit=ft.ImageFit.CONTAIN
+        src=images[current_index],
+        fit=ft.ImageFit.COVER,
+        width=page.window_width,
+        height=page.window_height,
     )
 
     image_container = ft.Container(
         content=image_display,
-        width=600,
-        height=500,
+        width=page.window_width,
+        height=page.window_height,
         border_radius=20,
-        clip_behavior=ft.ClipBehavior.HARD_EDGE,  # Recortar la imagen
-        bgcolor=ft.Colors.BLACK,
-    )
-
-    # Contenedor del carrusel
-    carousel_container = ft.Container(
-        content=image_container,  # Se referencia directamente la imagen
-        width=600,
-        height=500,
-        border_radius=20,
-        clip_behavior=ft.ClipBehavior.HARD_EDGE,
         shadow=ft.BoxShadow(
             spread_radius=15,
             blur_radius=35,
             color=ft.Colors.with_opacity(0.2, ft.Colors.BLACK),
             offset=ft.Offset(0, 5),
         ),
-        alignment=ft.alignment.center,
-        padding=ft.padding.only(left=50),
-        bgcolor=ft.Colors.TRANSPARENT,
-        animate_opacity=ft.Animation(300, "easeInOut"),
+        opacity=1.0,  
+        animate_opacity=ft.Animation(500, "easeInOut"),  
     )
 
-    def next_image(e=None):
+    def next_image():
         nonlocal current_index
         current_index = (current_index + 1) % len(images)
 
-        # Animación de opacidad
-        carousel_container.opacity = 0
+        image_container.opacity = 0
         page.update()
 
-        time.sleep(0.3)  # Pequeña pausa para el efecto de fade
+        time.sleep(0.5)  # pausa para la animación de fade
 
-        # Cambiar la imagen directamente
         image_display.src = images[current_index]
-        carousel_container.opacity = 1
+        image_container.opacity = 1
         page.update()
 
     def auto_rotate_images():
@@ -90,10 +74,6 @@ def main(page: ft.Page):
             next_image()
 
     threading.Thread(target=auto_rotate_images, daemon=True).start()
-
-    carousel = ft.Row(
-        controls=[carousel_container], alignment=ft.MainAxisAlignment.CENTER
-    )
 
     # Campos de texto para el formulario de inicio de sesión
     user_field = ft.TextField(
@@ -122,16 +102,13 @@ def main(page: ft.Page):
         password = pass_field.value
 
         if usuario and password:
-            # TODO Implementar aqui la lógica de autenticación
             print("Inicio de sesión exitoso")  
         else:
-            # Crear y mostrar el SnackBar si los campos están vacíos
-            page.open( ft.SnackBar(
+            page.open(ft.SnackBar(
                 content=ft.Text("Por favor, complete los campos"),
                 action="OK",
                 bgcolor="white"
             ))
-
 
     # Función para cerrar la aplicación
     def salir_programa(e):
@@ -142,7 +119,7 @@ def main(page: ft.Page):
         dlg_modal.open = False
         page.update()
 
-    # Crear el cuadro de diálogo modal
+    # cuadro de diálogo modal
     dlg_modal = ft.AlertDialog(
         modal=True,
         title=ft.Text("¿Estás Seguro?"),
@@ -168,7 +145,7 @@ def main(page: ft.Page):
         on_click=login,
     )
 
-    # Botón para cerrar sesión
+    # Botón para salir de la aplicación
     logout_button = ft.ElevatedButton(
         content=ft.Row(
             [
@@ -179,9 +156,8 @@ def main(page: ft.Page):
         ),
         width=280,
         bgcolor="red",
-        on_click = lambda e: page.open(dlg_modal),
+        on_click=lambda e: page.open(dlg_modal),
     )
-
 
     # Contenedor para el formulario de inicio de sesión
     login_container = ft.Container(
@@ -191,13 +167,13 @@ def main(page: ft.Page):
                 ft.Container(
                     content=ft.Column(
                         controls=[
-                            ft.Image(src=r"src\assets\white_logo.png", width=180, height=60),  # Logo encima de Bienvenida
+                            ft.Image(src=r"src\assets\white_logo.png", width=180, height=60),  
                             ft.Text("¡Bienvenido!", size=30, weight="w900", text_align="center", color="white"),
                         ],
                         alignment=ft.MainAxisAlignment.CENTER,
                         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                     ),
-                    padding=ft.padding.only(bottom=20),  # Ajustar espacio debajo del contenedor
+                    padding=ft.padding.only(bottom=20),  
                 ),
                 ft.Container(user_field, padding=ft.padding.only(top=10)),
                 ft.Container(pass_field, padding=ft.padding.only(top=10)),
@@ -221,14 +197,13 @@ def main(page: ft.Page):
     # Diseño principal 
     main_layout = ft.Row(
         [
-            carousel,
+            image_container,  
             ft.Container(width=50),
             login_container,
         ],
         alignment=ft.MainAxisAlignment.CENTER,
     )
 
-    # Agregar el diseño principal a la página
     page.add(main_layout)
 
 # Iniciar la aplicación
