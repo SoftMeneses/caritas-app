@@ -2,17 +2,19 @@ import flet as ft
 import threading
 import time
 import os
-from controllers.user_controller import LoginController
+from controllers.login_controller import LoginController
+from views.home_view import main as home_view 
 
 class LoginView(ft.Row):
-    def __init__(self, page: ft.Page):
+    def __init__(self, page: ft.Page, navegar):
         super().__init__(alignment=ft.MainAxisAlignment.CENTER)
         self.page = page
+        self.navegar = navegar 
         self.controller = LoginController()
         self.cherry = "#660924"
         self.wine = "#630D13"
                 # Cargar imágenes desde la carpeta
-        self.images = self.load_images_from_folder("./views/assets/side_images")
+        self.images = self.load_images_from_folder(os.path.join(os.path.dirname(__file__), "assets", "side_images"))
         self.current_index = 0
         
         self.image_display = ft.Image(
@@ -147,14 +149,21 @@ class LoginView(ft.Row):
             bgcolor="white"
         ))
 
-        if user:
-            print("Inicio de sesión exitoso")
+        user_permisos = self.controller.autenticar(usuario, password)
+        if user_permisos:
+            self.page.session.set("usuario", user_permisos)
+            self.redirect_user(user_permisos)
         else:
             self.page.open(ft.SnackBar(
                 content=ft.Text("Por favor, complete los campos"),
                 action="OK",
                 bgcolor="white"
             ))
+
+    def redirect_user(self, user):
+        self.page.clean() 
+        home_view(self.page, self.navegar)
+
 
     def salir_programa(self, e):
         self.page.window.close()
