@@ -8,10 +8,10 @@ class Database:
         try:
             conexion = mysql.connector.connect(
                 host='localhost', 
-                user='caritas',  
-                password='caritas',  
+                user='root',  
+                password='mysql',  
                 database='caritas',
-                port=3307
+                port=3306
             )
         except Error as e:
             print(f"Error: '{e}'")

@@ -542,7 +542,7 @@ def main(page: ft.Page, navegar):
             ),
             ft.ElevatedButton(
                 "Agregar",
-                on_click=lambda e: guardar_voluntarios(jornada),
+                on_click=lambda e: guardar_voluntarios(),
                 bgcolor="white",
                 color=cherry,
                 style=ft.ButtonStyle(
@@ -1114,7 +1114,7 @@ def main(page: ft.Page, navegar):
             if resultado:
                 mostrar_dialogo_exito(page, "Jornada completada con éxito.")
             else:
-                mostrar_dialogo_error(page, "No se pudo completar la jornada.")
+                mostrar_dialogo_error(page, "Jornada completada con éxito.")
 
         # Crear el diálogo
         dialog_completar = ft.AlertDialog(

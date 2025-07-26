@@ -104,8 +104,11 @@ class JornadasController:
         # 4. Actualiza la participación y horas de los voluntarios
         Jornadas.actualizar_participacion_voluntario(jornada_id, voluntarios_participacion, voluntarios_horas)
         # 5. Marca la jornada como completada
-        Jornadas.marcar_jornada_completada(jornada_id, comentarios)
-        return True
+    
+    def marcar_jornada_completada(self, jornada_id, comentarios):
+        return Jornadas.marcar_jornada_completada(jornada_id, comentarios)
+        #Jornadas.marcar_jornada_completada(jornada_id, comentarios)
+        #return True
 
     def marcar_jornada_no_completada(self, jornada_id):
         return Jornadas.marcar_jornada_no_completada(jornada_id)
